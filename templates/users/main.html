@@ -1,0 +1,23 @@
+{% extends "users/main_base.html" %}
+{% load static %}
+
+{% block mobileView %}
+<meta name="viewport" content="width=800, user-scalable=yes">
+{% endblock %}
+
+{% block header %}
+<link rel="stylesheet" href="{% static 'css/index/owl.carousel.min.css' %}">
+{% endblock %}
+
+{% block contents %}
+<div style="margin: 55px -10px -40px 4px;">
+    <br><br>
+    <p>dksduds</p>
+ 
+</div>
+
+<script src="{% static 'js/index/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/index/aos.js' %}"></script>
+<script src="{% static 'js/index/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/index/customCarousel.js' %}"></script>
+{% endblock %}

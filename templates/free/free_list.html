@@ -1,0 +1,378 @@
+{% load humanize %}
+{% load static %}
+{% load staticfiles %}
+
+<html>
+<head>
+    <title>FOCUS</title>
+    <meta charset='utf-8'>
+    <!-- <meta name='viewport' content='width=device-width, initial-scale=1'> -->
+    {% block mobileView %}
+    <!-- <meta name="viewport" content="width=800, user-scalable=yes"> -->
+    {% endblock %}
+    {% comment %} <link rel="shortcut icon" href="{% static 'img/reborn_favicon.ico' %}">이거 타이틀에 로고 이미지 {% endcomment %}
+    
+    <!-- JQuery -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    {% block header %}
+    {% endblock %}
+    <!-- JQuery Cookie-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <!-- https://getbootstrap.com/docs/4.3/getting-started/introduction/ -->
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    
+    {% block summernote %}
+    {% endblock %}
+    
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.11.0/css/mdb.min.css" rel="stylesheet">
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.11.0/js/mdb.min.js"></script>
+
+    <!-- Font Awesome Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/users/main.css' %}" type="text/css">
+    <script src="{% static 'js/users/popper.js' %}"></script>
+
+</head>
+
+<body>
+    <div class="wrapper d-flex align-items-stretch">
+        <!--사이드바-->
+        <nav id="sidebar">
+            <div id="side_hide">
+                <!-- <div style="text-align: right;"> -->
+                <div style="position:fixed; left: 273px; z-index:3;">
+                    <!-- <button type="button" id="sidebarCollapseHide" class="btn btn-primary" onclick="hide()" style="margin-bottom: -50px;">
+                        <i class="fa fa-chevron-left"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button> -->
+                    <div id="sidebarCollapseHide" onclick="hide()"
+                        style="margin-top: 15px; margin-right:15px; margin-bottom: -30px; cursor: pointer;">
+                        <i class="fa fa-chevron-left fa-lg"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 pt-5" style="position: fixed; width:300px;">
+                {% if user.is_authenticated %}
+                {% if user.level == '0' %}
+                <span style="font-size: 22px;">{{ user.name }}</span> 님 환영합니다. (개발자)
+                <div style="text-align: right; margin-bottom: -25px;">
+                    <a href="{% url 'users:logout' %}">로그아웃</a>
+                </div>
+                {% elif user.level == '1' %}
+                <span style="font-size: 22px;">{{ user.name }}</span> 님 환영합니다. (관리자)
+                <div style="text-align: right; margin-bottom: -25px;">
+                    <a href="{% url 'users:logout' %}">로그아웃</a>
+                </div>
+                {% else %}
+                <span style="font-size: 22px;">{{ user.name }}</span> 님 환영합니다.
+                <a href="{% url 'users:logout' %}" style="margin-left:20px;">로그아웃</a>
+                <br>
+                {% endif %}
+                {% else %}
+                <p>이 유저는 로그아웃 되어 있습니다..</p>
+                
+                <a href="{% url 'users:login' %}">로그인</a>&nbsp;&middot;
+                <a href="{% url 'users:agreement' %}">회원가입</a>
+                <br>
+                {% endif %}
+                <br>
+                <ul class="list-unstyled components mb-5 allMenuComponents" id="allMenuHide">
+                    <!-- <li class="active"> -->
+                    <li>
+                        <a href="{% url 'free:all_list' %}"><i class="fas fa-home" style="margin-left:1px;"></i>&nbsp;&nbsp;홈으로</a>
+                    </li>
+                    <li>
+                        <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu1"><i
+                                class="fas fa-user" style="margin:0 2.5px;"></i>&nbsp;&nbsp;마이페이지</a>
+                        <ul class="collapse list-unstyled" id="homeSubmenu">
+                            <li>
+                                <a href="{% url 'users:profile' %}"><i class="fas fa-user-cog"></i>&nbsp;&nbsp;내 정보</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'users:profile_post' %}"><i class="fas fa-user-edit"></i>&nbsp;&nbsp;작성한 글</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'users:profile_comment' %}"><i class="fas fa-comments"></i>&nbsp;&nbsp;댓글단 글</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- <li>
+                        <a href="#">About</a>
+                    </li> -->
+                    <li>
+                        <a href="#pageSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu2"><i
+                                class="fas fa-pen" style="margin-right:4px;"></i>&nbsp;&nbsp;커뮤니티</a>
+                        <ul class="collapse list-unstyled" id="pageSubmenu1">
+                            <li>
+                                <a href="{% url 'notice:notice_list' %}"><i
+                                        class="fas fa-clipboard"></i>&nbsp;&nbsp;공지사항</a>
+                            </li>
+                             <li>
+                                <a href="{% url 'free:free_write' %}"><i
+                                        class="fas fa-upload"></i>&nbsp;&nbsp;영상 올리기</a>
+                            </li>
+                        </ul>
+                    </li>
+                     <li>
+                        <a href="#pageSubmenu2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle menu3"><i
+                                class="fas fa-video-camera"></i>&nbsp;&nbsp;카테고리</a>
+                        <ul class="collapse list-unstyled" id="pageSubmenu2">
+                            <li>
+                                <a href="{% url 'free:broadcasting_list' %}"><i class="fas fa-music"></i>&nbsp;&nbsp;음악방송</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'free:musicvideo_list' %}"><i class="fas fa-file-video-o"></i>&nbsp;&nbsp;뮤직비디오</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'free:show_list' %}"><i class="fas fa-mask"></i>&nbsp;&nbsp;공연</a>
+                            </li>
+                             <li>
+                                <a href="{% url 'free:etc_list' %}"><i class="fas fa-ellipsis-h"></i>&nbsp;&nbsp;기타</a>
+                            </li>
+                            <!-- <li>
+                                <a href="#">Page 3</a>
+                            </li> -->
+                        </ul>
+                    </li>
+                </ul>
+
+                <!--사이드바 FOOTER-->
+                <div class="footer" style="position: fixed; bottom: 0; margin-left:-7px;">
+                    <p class="copyrightFooter">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>
+                            document.write(new Date().getFullYear());
+                        </script>All rights<br>reserved | This template is made with<br><i class="icon-heart"
+                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib.com</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                    </p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 메뉴  -->
+        <div id="content" class="p-5">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar" style="margin:-48px; position:fixed; left:348px; right:40px; z-index:2;">
+            <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin:-48px;"> -->
+                <!--사이드바 보기 버튼-->
+                <div id="side_show" style="position:absolute; z-index: 1; cursor: pointer; margin-left: 11px;">
+                    <div id="sidebarCollapseShow" onclick="show()" hidden>
+                        <i class="fa fa-bars fa-lg"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <!-- <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button> -->
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <a href="/" style="margin-left: 30px; font-size: 35px; font-weight: bold; color:#08298A; cursor: pointer; left:20">FOCUS</a>
+                        <ul class="nav navbar-nav" style="margin-left: 60px;">
+                            <!-- <li class="nav-item active"> -->
+                            <li class="nav-item">
+                                
+             <div >
+        <form action="" method="GET">
+            <div class="col">
+    
+                    <div class="form-row">
+                        <div class="col" style="margin-top: 10px;">
+                            <select style="width: 6em;" class="custom-select custom-select-md" name="type">
+                                <option value="all">전체</option>
+                                <option value="title_content">제목+내용</option>
+                                <option value="title">제목</option>
+                                <option value="content">내용</option>
+                                <option value="writer">작성자</option>
+                            </select>
+                        </div>
+                        <div class="col" style="margin-top: 10px;">
+                            <input type="text" name="q" value="{{ q }}" class="form-control form-control-md"
+                                style="width: 30em;" placeholder="검색어를 입력해주세요.">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-sm" type="submit" id="search_btn">검색</button>
+                        </div>
+                    </div>
+                
+            </div>
+        </form>
+                                                                
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+
+    <div class="container" >
+    <div class="row mt-5">
+        <div class="col-6" style="margin-top:50px;">
+            
+            {% if q %}
+            <h5 style="color: gray; font-weight: 550;"><i class="fas fa-search"></i>&nbsp;'{{ q }}' 검색 결과입니다.</h5>
+            {% endif %}
+        </div>
+        
+    </div>
+    <div>
+        <table class="table table-sm table-hover">
+            <thead style="border-top: 1px solid #dee2e6;">
+                <tr class="text-center">
+                    <th style="font-weight: bold; font-size: 16px;">영상</th>
+                    <th style="font-weight: bold; font-size: 16px;">제목</th>
+                    <th style="font-weight: bold; font-size: 16px;">작성자</th>
+                    <th style="font-weight: bold; font-size: 16px;">등록일</th>
+                    <th style="font-weight: bold; font-size: 16px;">조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if free_list %}
+                {% for free in free_list %}
+                <tr class="text-center" style="cursor:pointer;" onclick="location.href='/free/{{ free.id }}/'">
+                    <td style="font-weight: 500;"> <video id="id_uploaded_file" src="/free/download/{{free.id}}" width="200px" height="100px"></video>   
+</td>
+                    <td class="text-left" style="width:50%; font-weight: 600;">
+                     
+                        <!-- <a id="free-{{ free.id }}" href="{% url 'free:free_detail' free.id %}">{{ free.title|truncatechars:30 }}</a> -->
+                        <a id="free-{{ free.id }}" style="padding-left:200px;">{{ free.title|truncatechars:30 }}</a>
+                           {% if free.category2 == '음악방송' %}
+                        <span class="badge badge-light">{{ free.category2 }}</span>&nbsp;
+                        {% elif free.category2 == '뮤직비디오' %}
+                        <span class="badge badge-light">{{ free.category2 }}</span>&nbsp;
+                        {% elif free.category2 == '공연' %}
+                        <span class="badge badge-light">{{ free.category2 }}</span>&nbsp;
+                        {% elif free.category2 == '기타' %}
+                        <span class="badge badge-light">{{ free.category2 }}</span>&nbsp;
+                        {% endif %}
+                        {% if free.comments %}
+                        &nbsp;<span style="color:gray;">[{{ free.comments }}]</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-weight: 500;">{{ free.writer}}</td>
+                    {% if free.created_string == False %}
+                    <td style="font-weight: 500;">{{ free.registered_date|date:'m월 d일' }}</td>
+                    {% else %}
+                    <td style="font-weight: 500;">{{ free.created_string }}</td>
+                    {% endif %}
+                    <td style="font-weight: 500;">{{ free.hits }}</td>
+
+                </tr>
+                {% endfor %}
+                {% else %}
+                    {% if q %}
+                    <tr class="text-center">
+                        <td style="font-weight: bold; color:gray;" colspan="5">
+                            <i class="fas fa-info-circle"></i>&nbsp;일치하는 검색 결과가 없습니다.
+                        </td>
+                    </tr>
+                    {% else %}
+                        <tr class="text-center">
+                            <td style="font-weight: bold; color:gray;" colspan="5">
+                                <i class="fas fa-info-circle"></i>&nbsp;작성된 게시글이 없습니다.
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+
+
+        <br>
+        <div class="col-md-offset-6">
+            {% if is_paginated %}
+            <!-- <ul class="pagination justify-content-center pagination-sm"> -->
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page_obj.previous_page_number }}"
+                        tabindex="-1" style="font-size: 15px;">이전</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" style="font-size: 15px;">이전</a>
+                </li>
+                {% endif %}
+
+                {% for page in page_range %}
+                <li class="page-item {% if page == page_obj.number %} activate {% endif %}">
+                    <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page }}" style="font-size: 15px;">{{ page }}</a>
+                </li>
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link"
+                        href="?type={{ type }}&q={{ q }}&page={{ page_obj.next_page_number }}" style="font-size: 15px;">다음</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" style="font-size: 15px;">다음</a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+            {% block contents %}
+            {% endblock %}
+    </div>
+
+        </div>
+    <script src="{% static 'js/users/sidebar.js' %}"></script>
+    <script src="{% static 'js/users/browserCheck.js' %}"></script>
+
+    {% block script %}
+    {% endblock %}
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags %}
+    <script>
+        alert("{{ message.message }}")
+    </script>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+<script type="text/javascript">
+    target = window.location.search.split('&')[0].split('=')[1]
+    var type = document.getElementsByTagName('option')
+    for (var i = 0; i < 5; i++) {
+        if (type[i].value === target) {
+            type[i].setAttribute('selected', 'selected')
+        }
+    }
+</script>
+
+</body>
+
+</html>
+
